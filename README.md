@@ -121,6 +121,13 @@ src/
 
 ## Deployment
 
-**GitHub Pages** — the repo includes `.github/workflows/deploy.yml`; push to `main` and enable Pages → *GitHub Actions*. `vite.config.js` already sets the project-page `base`.
+Hosted on **GitHub Pages** from the `gh-pages` branch:
 
-**Vercel** — import the repo, framework preset *Vite*. No config changes needed.
+```bash
+npm run build
+npm run deploy   # pushes dist/ to the gh-pages branch (gh-pages package)
+```
+
+Live URL: `https://swapnil26-art.github.io/Flight-Seat-Selection-Passenger-Management-/`
+
+`vite.config.js` sets the project-page `base` path, so the build works from the repo sub-path. (A GitHub Actions workflow is an alternative once Actions are enabled on the account.)

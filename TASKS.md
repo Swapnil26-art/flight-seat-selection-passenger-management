@@ -52,7 +52,13 @@
 - [x] `npm run build` passes with no errors
 - [x] Smoke test: 21/21 checks pass (render + reducer logic incl. double-assign, count drop, layout switch, toggle)
 - [x] README: state management + seat-assignment logic explanation
-- [x] GitHub Pages workflow + vite base path; Vercel works as-is
+- [x] Deployed: GitHub Pages (gh-pages branch) — LIVE, HTTP 200, verified
+
+## Deployment notes
+- GitHub account had a billing lock → Actions runners refused to start (workflow build job failed).
+- Worked around it with the classic branch deploy: Pages source = `gh-pages` branch, deployed via `npm run deploy` (gh-pages package). Verified live at
+  https://swapnil26-art.github.io/Flight-Seat-Selection-Passenger-Management-/
+- Once the billing issue is fixed at https://github.com/settings/billing, the user may switch back to Actions if preferred (README documents both).
 
 ## Bugs found & fixed during build
 1. `SeatRow.jsx` imported `Seat` as named export but it was a default export → build failed → fixed import.
