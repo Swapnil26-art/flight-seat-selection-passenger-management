@@ -1,4 +1,4 @@
-# ✈️ SkySelect — Flight Seat Selection & Passenger Management
+# ✈️ SkySelect - Flight Seat Selection & Passenger Management
 
 An interactive flight seat-selection interface built with **React 18 + Vite**. Passengers pick how many people are flying, choose between two aircraft layouts, assign seats on a visual seat map, optionally add meals, and see a live cost breakdown.
 
@@ -8,13 +8,13 @@ An interactive flight seat-selection interface built with **React 18 + Vite**. P
 
 ## Features
 
-- **Passenger management** — select 1–7 passengers, switch between them, see each person's assigned seat and charges at a glance.
-- **Two aircraft layouts** — `3-2` (A B C ⌣ D E, 12 rows) and `2-3-2` (A B ⌣ D E F ⌣ G H, 10 rows), switchable any time with row numbers, seat labels and aisle gaps.
-- **Four seat states** — available, occupied (pre-checked-in, not clickable), selected (current passenger) and taken (another passenger in your group).
-- **Three pricing categories** — Standard (₹0/free), Premium ₹250 (windows) and Extra Legroom ₹350 (aisle-side front rows). Paid seats show a price badge; the legend explains everything.
-- **Live price summary** — per-passenger breakdown (seat + meal) and a grand total that updates the instant a seat is selected, changed or removed.
-- **Meals (bonus)** — one meal per passenger, free and paid options, included in the total.
-- **Feedback & states** — loading skeleton, empty-state hints, toast messages for invalid actions (occupied seat, seat taken by another passenger, layout change clearing seats), fully responsive down to mobile.
+- **Passenger management** - select 1-7 passengers, switch between them, see each person's assigned seat and charges at a glance.
+- **Two aircraft layouts** - `3-2` (A B C ⌣ D E, 12 rows) and `2-3-2` (A B ⌣ D E F ⌣ G H, 10 rows), switchable any time with row numbers, seat labels and aisle gaps.
+- **Four seat states** - available, occupied (pre-checked-in, not clickable), selected (current passenger) and taken (another passenger in your group).
+- **Three pricing categories** - Standard (₹0/free), Premium ₹250 (windows) and Extra Legroom ₹350 (aisle-side front rows). Paid seats show a price badge; the legend explains everything.
+- **Live price summary** - per-passenger breakdown (seat + meal) and a grand total that updates the instant a seat is selected, changed or removed.
+- **Meals (bonus)** - one meal per passenger, free and paid options, included in the total.
+- **Feedback & states** - loading skeleton, empty-state hints, toast messages for invalid actions (occupied seat, seat taken by another passenger, layout change clearing seats), fully responsive down to mobile.
 
 ## Getting started
 
@@ -58,7 +58,7 @@ getSeatStatus(seat):
   otherwise                     → 'available'
 ```
 
-Because a passenger object holds a single `seatId` string, **one seat per passenger is guaranteed by the data shape** — there is no list of "assigned seats" that could drift out of sync.
+Because a passenger object holds a single `seatId` string, **one seat per passenger is guaranteed by the data shape** - there is no list of "assigned seats" that could drift out of sync.
 
 ### Reducer actions
 
@@ -75,9 +75,9 @@ Because a passenger object holds a single `seatId` string, **one seat per passen
 
 1. The user selects a passenger (or the first one is selected by default).
 2. Clicking an **available** seat dispatches `ASSIGN_SEAT`; the context layer first validates the seat's derived status and shows a toast instead of dispatching for invalid clicks (occupied / taken).
-3. The reducer swaps the selected passenger's `seatId` — if they had a seat, it simply moves, so the old seat automatically frees up (it is no longer referenced by anyone).
+3. The reducer swaps the selected passenger's `seatId` - if they had a seat, it simply moves, so the old seat automatically frees up (it is no longer referenced by anyone).
 4. Preventing double-booking needs no extra bookkeeping: a seat is "taken" exactly when some passenger's `seatId` equals its id, and the reducer guard makes a second claim impossible.
-5. Totals are computed during the context-value memoisation (`seatTotal`, `mealTotal`, `grandTotal`), so **any** state change that affects assignments re-renders the summary immediately — no manual recalculation events.
+5. Totals are computed during the context-value memoisation (`seatTotal`, `mealTotal`, `grandTotal`), so **any** state change that affects assignments re-renders the summary immediately - no manual recalculation events.
 
 ## Pricing model (`src/data/seatGenerator.js`)
 
@@ -85,7 +85,7 @@ Because a passenger object holds a single `seatId` string, **one seat per passen
 |---|---|---|
 | Standard | ₹0 | everything else (matches sample seats 1A, 1B, 1D, 2B) |
 | Premium | ₹250 | window seats (matches sample 1E) |
-| Extra Legroom | ₹350 | aisle-side seats in rows 1–2 (matches sample 1C, 2A) |
+| Extra Legroom | ₹350 | aisle-side seats in rows 1-2 (matches sample 1C, 2A) |
 
 Occupied seats are seeded with a deterministic PRNG (~30%), so the map looks realistic but is identical on every reload.
 

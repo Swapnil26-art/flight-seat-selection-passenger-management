@@ -8,7 +8,7 @@ import { getMeal } from '../data/meals';
  *
  * Seat assignments live on the passenger (passenger.seatId), and seat
  * occupancy is always *derived* from that list plus the pre-seeded
- * occupied seats — so a seat can never silently belong to two people.
+ * occupied seats - so a seat can never silently belong to two people.
  */
 
 const PASSENGER_NAMES = [
@@ -59,7 +59,7 @@ function reducer(state, action) {
       if (!seat || seat.occupied) return state;
 
       const holder = state.passengers.find((p) => p.seatId === seatId);
-      // Only block when somebody ELSE already holds the seat — if the
+      // Only block when somebody ELSE already holds the seat - if the
       // current passenger holds it, clicking again removes it (toggle).
       if (holder && holder.id !== state.selectedPassengerId) return state;
 
@@ -202,7 +202,7 @@ export function BookingProvider({ children }) {
         dispatch({ type: 'SWITCH_LAYOUT', layoutId });
         if (dropped.length > 0) {
           addToast(
-            `${dropped.length} seat assignment(s) cleared — those seats don't exist on this aircraft.`,
+            `${dropped.length} seat assignment(s) cleared - those seats don't exist on this aircraft.`,
             'info',
           );
         }

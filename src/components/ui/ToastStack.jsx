@@ -1,6 +1,6 @@
 import { useBooking } from '../../context/BookingContext';
 
-/** Lightweight toast stack — feedback for invalid / informational actions. */
+/** Lightweight toast stack - feedback for invalid / informational actions. */
 export default function ToastStack() {
   const { toasts, dismissToast } = useBooking();
 

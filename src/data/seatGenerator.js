@@ -2,7 +2,7 @@ import { LAYOUTS, seatLetters } from './layouts';
 
 /**
  * Pricing categories, ordered for the legend. Price ₹0 means the seat is
- * free to pick (standard seating) — exactly like the sample data table.
+ * free to pick (standard seating) - exactly like the sample data table.
  */
 export const SEAT_CATEGORIES = {
   standard: { label: 'Standard', price: 0 },

@@ -7,7 +7,7 @@
 - [x] Folder structure: `src/data`, `src/context`, `src/components`, `src/hooks`, `src/utils`
 
 ## 2. Mock Data
-- [x] Layout definitions: 3–2 and 2–3–2 (letters + aisle positions)
+- [x] Layout definitions: 3-2 and 2-3-2 (letters + aisle positions)
 - [x] Seat generator: row/letter, category (Standard ₹0 / Premium ₹250 / Extra Legroom ₹350)
 - [x] Deterministic occupied-seat seeding (~30%)
 - [x] Meal options (free + paid)
@@ -15,7 +15,7 @@
 ## 3. State Management (Context + useReducer)
 - [x] State: passengers, selectedPassengerId, assignments, meals, layout
 - [x] Actions: SET_PASSENGER_COUNT, SELECT_PASSENGER, ASSIGN_SEAT, REMOVE_SEAT, SWITCH_LAYOUT, SELECT_MEAL
-- [x] Derived occupancy (pre-occupied + assigned) — single source of truth
+- [x] Derived occupancy (pre-occupied + assigned) - single source of truth
 - [x] Edge: passenger count decrease removes orphan assignments
 - [x] Edge: layout switch clears now-invalid assignments + notifies user
 
@@ -24,12 +24,12 @@
 - [x] Price badge on paid seats, tooltip with details
 - [x] Row numbers + aisle gaps + seat labels
 - [x] Legend (states + pricing categories)
-- [x] Layout switcher (3–2 ⇄ 2–3–2)
+- [x] Layout switcher (3-2 ⇄ 2-3-2)
 - [x] Click available seat → assigns to selected passenger
 - [x] Click occupied/taken seat → toast feedback, no state change
 
 ## 5. Passenger Panel
-- [x] Count selector (1–7)
+- [x] Count selector (1-7)
 - [x] Passenger cards: name, assigned seat, seat price, remove-seat button
 - [x] Active passenger highlight; switching retains assignments
 
@@ -52,7 +52,7 @@
 - [x] `npm run build` passes with no errors
 - [x] Smoke test: 27/27 checks pass (render + reducer logic incl. double-assign, moves, meals, occupied rejection, count drop, layout switch, toggle)
 - [x] README: state management + seat-assignment logic explanation
-- [x] Deployed: GitHub Pages (gh-pages branch) — LIVE, HTTP 200, verified
+- [x] Deployed: GitHub Pages (gh-pages branch) - LIVE, HTTP 200, verified
 
 ## Deployment notes
 - GitHub account had a billing lock → Actions runners refused to start (workflow build job failed).
@@ -67,13 +67,13 @@
 4. Loading state initially lived in the reducer, blocking SSR smoke test and mixing view concern into data state → moved `loading` to `App` via `useState`.
 5. Smoke test initially tried to load `react-dom/server` through Vite → import natively instead; interaction probe replaced with pure reducer unit checks.
 
-## Pass 2 — full code review (all fixed)
+## Pass 2 - full code review (all fixed)
 6. **Ghost price pill on free seats**: JSX renders `data-price=""` (empty string still creates the attribute), so the `[data-price]::after` CSS painted a tiny empty badge above every free seat → now `undefined` so the attribute is omitted entirely.
 7. **Invalid nested interactive elements**: `PassengerCard` had a `role="button"` span inside a real `<button>` → restructured to a div card (role=button, keyboard support) containing a real ✕ button; CSS updated for cursor/focus/reset styles.
 8. **No feedback on seat move**: moving a passenger to a different seat was silent → added info toast ("A moved from seat 1C to 3D").
 9. **Reducer accepted occupied seats on direct dispatch** (UI guarded it, but defense-in-depth was missing) → reducer now verifies the seat exists and isn't pre-occupied before assigning.
 
-## Pass 2 — test additions (27/27 passing)
+## Pass 2 - test additions (27/27 passing)
 - Occupied-seat rejection at reducer level
 - Seat move frees the old seat automatically
 - Seat+meal total arithmetic consistency (₹850 scenario)

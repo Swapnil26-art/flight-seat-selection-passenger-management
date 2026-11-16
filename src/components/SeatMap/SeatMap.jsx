@@ -20,7 +20,7 @@ export default function SeatMap() {
       {unassigned > 0 && (
         <p className="seat-map-banner">
           {selectedPassenger
-            ? `${unassigned} passenger${unassigned > 1 ? 's' : ''} still need${unassigned > 1 ? '' : 's'} a seat — selecting for ${selectedPassenger.name}.`
+            ? `${unassigned} passenger${unassigned > 1 ? 's' : ''} still need${unassigned > 1 ? '' : 's'} a seat - selecting for ${selectedPassenger.name}.`
             : ''}
         </p>
       )}

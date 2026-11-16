@@ -21,7 +21,7 @@ export default function PassengerPanel() {
 
       {selectedPassenger ? (
         <p className="panel__hint">
-          Picking seats for <strong>{selectedPassenger.name}</strong> — tap any
+          Picking seats for <strong>{selectedPassenger.name}</strong> - tap any
           available seat on the map.
         </p>
       ) : (

@@ -1,4 +1,4 @@
-/** Meal options — one per passenger. price ₹0 = complimentary. */
+/** Meal options - one per passenger. price ₹0 = complimentary. */
 export const MEAL_OPTIONS = [
   { id: 'none', label: 'No meal', price: 0 },
   { id: 'veg', label: 'Veg Thali', price: 0 },
