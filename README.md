@@ -130,4 +130,4 @@ npm run deploy   # pushes dist/ to the gh-pages branch (gh-pages package)
 
 Live URL: `https://swapnil26-art.github.io/flight-seat-selection-passenger-management/`
 
-`vite.config.js` sets the project-page `base` path, so the build works from the repo sub-path. (A GitHub Actions workflow is an alternative once Actions are enabled on the account.)
+`vite.config.js` uses a **relative base (`./`)**, so the same build works on GitHub Pages (repo sub-path), Vercel (domain root) and any other static host — no per-host config needed. (A GitHub Actions workflow is an alternative once Actions are enabled on the account.)
