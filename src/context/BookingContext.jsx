@@ -53,6 +53,11 @@ function reducer(state, action) {
 
     case 'ASSIGN_SEAT': {
       const seatId = action.seatId;
+      // Defense-in-depth: never accept a seat that doesn't exist or is
+      // pre-occupied, even if a caller skips the context-level validation.
+      const seat = generateSeatMap(state.layoutId).find((s) => s.id === seatId);
+      if (!seat || seat.occupied) return state;
+
       const holder = state.passengers.find((p) => p.seatId === seatId);
       // Only block when somebody ELSE already holds the seat — if the
       // current passenger holds it, clicking again removes it (toggle).
@@ -148,6 +153,11 @@ export function BookingProvider({ children }) {
       if (status === 'taken') {
         addToast(`Seat ${seat.id} is assigned to another passenger.`);
         return;
+      }
+      // Changing to a different seat deserves visible feedback too.
+      const mover = state.passengers.find((p) => p.id === state.selectedPassengerId);
+      if (mover?.seatId && mover.seatId !== seat.id) {
+        addToast(`${mover.name} moved from seat ${mover.seatId} to ${seat.id}.`, 'info');
       }
       dispatch({ type: 'ASSIGN_SEAT', seatId: seat.id });
     },

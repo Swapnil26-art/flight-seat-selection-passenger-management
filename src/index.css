@@ -186,10 +186,12 @@ button:disabled { cursor: not-allowed; }
   border-radius: 12px;
   background: var(--surface);
   text-align: left;
+  cursor: pointer;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .passenger-card:hover { border-color: #b9c6de; }
+.passenger-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .passenger-card--active {
   border-color: var(--accent);
@@ -221,7 +223,9 @@ button:disabled { cursor: not-allowed; }
   height: 24px;
   display: grid;
   place-items: center;
+  border: none;
   border-radius: 50%;
+  padding: 0;
   color: var(--danger);
   background: var(--danger-soft);
   font-size: 12px;

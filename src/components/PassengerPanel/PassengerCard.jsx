@@ -1,18 +1,29 @@
 import { useBooking } from '../../context/BookingContext';
 import { formatPrice } from '../../utils/formatPrice';
 
-/** One passenger row: name, assigned seat, seat price, seat removal. */
+/**
+ * One passenger row: name, assigned seat, seat price, seat removal.
+ * The card itself selects the passenger; the ✕ inside removes their seat,
+ * so the two interactions stay separate (no nested buttons in the DOM).
+ */
 export default function PassengerCard({ passenger }) {
   const { selectedPassengerId, selectPassenger, seatById, removeSeat } = useBooking();
   const isActive = passenger.id === selectedPassengerId;
   const seat = passenger.seatId ? seatById.get(passenger.seatId) : null;
 
   return (
-    <button
-      type="button"
+    <div
       className={`passenger-card ${isActive ? 'passenger-card--active' : ''}`}
-      onClick={() => selectPassenger(passenger.id)}
+      role="button"
+      tabIndex={0}
       aria-pressed={isActive}
+      onClick={() => selectPassenger(passenger.id)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          selectPassenger(passenger.id);
+        }
+      }}
     >
       <span className="passenger-card__avatar" aria-hidden="true">
         {passenger.name.charAt(0)}
@@ -32,25 +43,18 @@ export default function PassengerCard({ passenger }) {
       </span>
 
       {seat && (
-        <span
+        <button
+          type="button"
           className="passenger-card__remove"
-          role="button"
-          tabIndex={0}
           aria-label={`Remove seat ${seat.id} from ${passenger.name}`}
           onClick={(event) => {
             event.stopPropagation();
             removeSeat(passenger.id);
           }}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.stopPropagation();
-              removeSeat(passenger.id);
-            }
-          }}
         >
           ✕
-        </span>
+        </button>
       )}
-    </button>
+    </div>
   );
 }

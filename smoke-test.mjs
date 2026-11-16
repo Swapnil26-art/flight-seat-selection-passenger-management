@@ -62,38 +62,73 @@ try {
 
   // --- reducer behaviour: double-assignment prevention, totals, edge cases ---
   const { reducer, initialState } = await vite.ssrLoadModule('/src/context/BookingContext.jsx');
-  const free = layout32.find((s) => !s.occupied);
+  const { getMeal } = await vite.ssrLoadModule('/src/data/meals.js');
 
-  let state = initialState;
-  state = reducer(state, { type: 'ASSIGN_SEAT', seatId: free.id });          // p1 takes it
+  // Pick seats dynamically so the tests never depend on which seats are occupied.
+  const freeOnBoth = layout232
+    .filter((s) => !s.occupied)
+    .map((s) => s.id)
+    .filter((id) => layout32.some((t) => t.id === id && !t.occupied));
+  const keepSeat = freeOnBoth[0];            // exists & free on both layouts
+  const otherSeat = freeOnBoth[1];           // a second common free seat
+  const only32 = layout32.find((s) => s.row > 10 && !s.occupied)?.id; // 3-2 rows 11-12
+  const occupied = layout32.find((s) => s.occupied)?.id;
+
+  let state = initialState; // p1 selected
+
+  // hardening: reducer must refuse occupied seats even on direct dispatch
+  state = reducer(state, { type: 'ASSIGN_SEAT', seatId: occupied });
+  check('Reducer refuses occupied seat on direct dispatch',
+    state.passengers.every((p) => p.seatId === null));
+
+  state = reducer(state, { type: 'ASSIGN_SEAT', seatId: keepSeat });
+  check('Free seat assigned to selected passenger', state.passengers[0].seatId === keepSeat);
+
   state = reducer(state, { type: 'SELECT_PASSENGER', id: 'p2' });
-  state = reducer(state, { type: 'ASSIGN_SEAT', seatId: free.id });          // p2 tries same seat
-
-  const holders = state.passengers.filter((p) => p.seatId === free.id);
-  check('Double-assign prevented: exactly one holder', holders.length === 1);
+  state = reducer(state, { type: 'ASSIGN_SEAT', seatId: keepSeat }); // p2 tries p1's seat
+  check('Double-assign prevented: exactly one holder',
+    state.passengers.filter((p) => p.seatId === keepSeat).length === 1);
   check('Second passenger got no seat', state.passengers[1].seatId === null);
+
+  // moving to a different seat frees the old one
+  state = reducer(state, { type: 'ASSIGN_SEAT', seatId: otherSeat });
+  check('Passenger can move to another free seat', state.passengers[1].seatId === otherSeat);
+  check('Old seat freed automatically after move',
+    state.passengers.every((p) => p.seatId !== keepSeat || p.id === 'p1'));
+
+  // seat + meal totals reproduce the context formula
+  state = reducer(state, { type: 'SELECT_MEAL', passengerId: 'p2', mealId: 'chicken' });
+  check('Meal recorded for passenger', state.passengers[1].mealId === 'chicken');
+  const seatById = new Map(layout32.map((s) => [s.id, s]));
+  const seatTotal = state.passengers.reduce((sum, p) => {
+    const s = p.seatId ? seatById.get(p.seatId) : null;
+    return sum + (s ? s.price : 0);
+  }, 0);
+  const mealTotal = state.passengers.reduce((sum, p) => sum + getMeal(p.mealId).price, 0);
+  const expected = seatById.get(keepSeat).price + seatById.get(otherSeat).price + getMeal('chicken').price;
+  check(`Seat+meal total math consistent (₹${expected})`,
+    seatTotal + mealTotal === expected && expected > 0);
 
   state = reducer(state, { type: 'REMOVE_SEAT', passengerId: 'p1' });
   check('Seat removed cleanly', state.passengers[0].seatId === null);
 
   // passenger count decrease drops orphan assignments
-  state = reducer(state, { type: 'ASSIGN_SEAT', seatId: free.id });
   state = reducer(state, { type: 'SET_PASSENGER_COUNT', count: 1 });
-  check(
-    'Count decrease drops removed passengers (and their seats)',
-    state.passengers.length === 1 && state.passengers[0].seatId === null,
-  );
+  check('Count decrease drops removed passengers (and their seats)',
+    state.passengers.length === 1 && state.passengers[0].seatId === null);
 
   // layout switch clears seats that don't exist on the new aircraft
-  state = reducer(state, { type: 'ASSIGN_SEAT', seatId: '12E' }); // exists on 3-2 only
-  state = reducer(state, { type: 'SWITCH_LAYOUT', layoutId: '2-3-2' });
-  check('Layout switch clears now-invalid seat', state.passengers[0].seatId === null);
-  state = reducer(state, { type: 'ASSIGN_SEAT', seatId: '5E' }); // exists on both
+  if (only32) {
+    state = reducer(state, { type: 'ASSIGN_SEAT', seatId: only32 });
+    state = reducer(state, { type: 'SWITCH_LAYOUT', layoutId: '2-3-2' });
+    check('Layout switch clears now-invalid seat', state.passengers[0].seatId === null);
+  }
+  state = reducer(state, { type: 'ASSIGN_SEAT', seatId: keepSeat }); // valid on both
   state = reducer(state, { type: 'SWITCH_LAYOUT', layoutId: '3-2' });
-  check('Layout switch keeps valid seat', state.passengers[0].seatId === '5E');
+  check('Layout switch keeps valid seat', state.passengers[0].seatId === keepSeat);
 
   // toggling the same seat unassigns it
-  state = reducer(state, { type: 'ASSIGN_SEAT', seatId: '5E' });
+  state = reducer(state, { type: 'ASSIGN_SEAT', seatId: keepSeat });
   check('Clicking own seat again removes it', state.passengers[0].seatId === null);
 
   console.log(failed === 0 ? '\n✅ All smoke checks passed.' : `\n❌ ${failed} check(s) failed.`);

@@ -32,7 +32,7 @@ export default function Seat({ seat, aisleBefore }) {
       disabled={status === 'occupied' || status === 'taken'}
       title={label}
       aria-label={label}
-      data-price={isPaid ? `+₹${seat.price}` : ''}
+      data-price={isPaid ? `+₹${seat.price}` : undefined}
     >
       {seat.letter}
     </button>

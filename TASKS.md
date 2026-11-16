@@ -50,7 +50,7 @@
 
 ## 9. Quality
 - [x] `npm run build` passes with no errors
-- [x] Smoke test: 21/21 checks pass (render + reducer logic incl. double-assign, count drop, layout switch, toggle)
+- [x] Smoke test: 27/27 checks pass (render + reducer logic incl. double-assign, moves, meals, occupied rejection, count drop, layout switch, toggle)
 - [x] README: state management + seat-assignment logic explanation
 - [x] Deployed: GitHub Pages (gh-pages branch) — LIVE, HTTP 200, verified
 
@@ -66,3 +66,16 @@
 3. Reducer `ASSIGN_SEAT` early-returned when *anyone* held the seat, which made the "click own seat to remove" toggle unreachable → guard now only blocks when a *different* passenger holds it.
 4. Loading state initially lived in the reducer, blocking SSR smoke test and mixing view concern into data state → moved `loading` to `App` via `useState`.
 5. Smoke test initially tried to load `react-dom/server` through Vite → import natively instead; interaction probe replaced with pure reducer unit checks.
+
+## Pass 2 — full code review (all fixed)
+6. **Ghost price pill on free seats**: JSX renders `data-price=""` (empty string still creates the attribute), so the `[data-price]::after` CSS painted a tiny empty badge above every free seat → now `undefined` so the attribute is omitted entirely.
+7. **Invalid nested interactive elements**: `PassengerCard` had a `role="button"` span inside a real `<button>` → restructured to a div card (role=button, keyboard support) containing a real ✕ button; CSS updated for cursor/focus/reset styles.
+8. **No feedback on seat move**: moving a passenger to a different seat was silent → added info toast ("A moved from seat 1C to 3D").
+9. **Reducer accepted occupied seats on direct dispatch** (UI guarded it, but defense-in-depth was missing) → reducer now verifies the seat exists and isn't pre-occupied before assigning.
+
+## Pass 2 — test additions (27/27 passing)
+- Occupied-seat rejection at reducer level
+- Seat move frees the old seat automatically
+- Seat+meal total arithmetic consistency (₹850 scenario)
+- Meal selection recorded per passenger
+- Tests now pick free seats dynamically instead of hardcoding IDs
