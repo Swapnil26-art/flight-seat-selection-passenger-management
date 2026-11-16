@@ -72,6 +72,8 @@
 7. **Invalid nested interactive elements**: `PassengerCard` had a `role="button"` span inside a real `<button>` → restructured to a div card (role=button, keyboard support) containing a real ✕ button; CSS updated for cursor/focus/reset styles.
 8. **No feedback on seat move**: moving a passenger to a different seat was silent → added info toast ("A moved from seat 1C to 3D").
 9. **Reducer accepted occupied seats on direct dispatch** (UI guarded it, but defense-in-depth was missing) → reducer now verifies the seat exists and isn't pre-occupied before assigning.
+10. **Blank white page on Vercel**: `vite.config.js` had `base: '/flight-seat-selection-passenger-management/'` (GitHub Pages sub-path), so on Vercel the browser requested assets under a path that doesn't exist there -> 404 -> blank page. Fixed by switching to a relative base (`./`), which works on both hosts with one build.
+11. Also noted: the user's Vercel link served Vercel's login page, i.e. Deployment Protection was enabled - needs disabling in the Vercel dashboard (Settings -> Deployment Protection).
 
 ## Pass 2 - test additions (27/27 passing)
 - Occupied-seat rejection at reducer level
