@@ -57,7 +57,7 @@
 ## Deployment notes
 - GitHub account had a billing lock → Actions runners refused to start (workflow build job failed).
 - Worked around it with the classic branch deploy: Pages source = `gh-pages` branch, deployed via `npm run deploy` (gh-pages package). Verified live at
-  https://swapnil26-art.github.io/Flight-Seat-Selection-Passenger-Management-/
+  https://swapnil26-art.github.io/flight-seat-selection-passenger-management/
 - Once the billing issue is fixed at https://github.com/settings/billing, the user may switch back to Actions if preferred (README documents both).
 
 ## Bugs found & fixed during build
